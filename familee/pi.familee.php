@@ -27,7 +27,7 @@
 
 $plugin_info = array(
 	'pi_name'			=> 'Familee',
-	'pi_version'		=> '2.0.1',
+	'pi_version'		=> '2.0.2',
 	'pi_author'			=> 'Aaron Fowler',
 	'pi_author_url'		=> 'http://twitter.com/adfowler',
 	'pi_description'	=> 'Outputs an unordered list of forward/reverse relationship links with no duplicates.',
@@ -40,7 +40,7 @@ $plugin_info = array(
  * Outputs an unordered list of 
  * forward/reverse relationship links with no duplicates
  *
- * @version 2.0.1
+ * @version 2.0.2
  *
  */
 class Familee {
@@ -116,7 +116,7 @@ class Familee {
 					$orderby = strtolower($this->EE->TMPL->fetch_param('orderby'));
 				}
 			}
-
+			
 			foreach ($allowable_sort as $param)
 			{
 				if (strtolower($this->EE->TMPL->fetch_param('sort')) == $param)
@@ -125,20 +125,47 @@ class Familee {
 				}
 			}
 			
-			// Create SQL query string for reverse relationships
-			$sql = "SELECT DISTINCT entry_id, title, url_title, status, entry_date FROM exp_channel_titles WHERE status != 'closed' " . $channel_sql . " AND 
-			(entry_id IN (SELECT rel_child_id FROM exp_relationships WHERE rel_parent_id=" . $entry_id . " AND rel_type='channel')
-			OR entry_id IN (SELECT rel_parent_id from exp_relationships WHERE rel_child_id=" . $entry_id . " AND rel_type='channel'))
-			ORDER BY " . $orderby . " " . $sort;
+			// Find all of the entry_ids related to the current entry
+			$relations = '';
 			
+			$sql = "SELECT rel_child_id 
+			FROM exp_relationships 
+			WHERE rel_parent_id=" . $entry_id . " AND rel_type='channel'";
 			// Perform SQL query
 			$results = $this->EE->db->query($sql);
-			
 			foreach ($results->result_array() as $row)
 			{
-				$this->return_data .= '<li><a href="' . $path . $row['url_title'] . '">' . $row['title'] . '</a></li>';
+				$relations .= $row['rel_child_id'] . ',';
 			}
-		
+			
+			$sql = "SELECT rel_parent_id 
+			FROM exp_relationships 
+			WHERE rel_child_id=" . $entry_id . " AND rel_type='channel'";
+			// Perform SQL query
+			$results = $this->EE->db->query($sql);
+			foreach ($results->result_array() as $row)
+			{
+				$relations .= $row['rel_parent_id'] . ',';
+			}
+			
+			if ($relations != '')
+			{
+				// Pull channel_title data for the related entries
+				$sql = "SELECT DISTINCT entry_id, title, url_title, status, entry_date 
+				FROM exp_channel_titles 
+				WHERE status != 'closed' " . $channel_sql . " 
+				AND entry_id IN (" . substr($relations, 0, -1) . ") 
+				ORDER BY " . $orderby . " " . $sort;
+			
+				// Perform SQL query
+				$results = $this->EE->db->query($sql);
+			
+				foreach ($results->result_array() as $row)
+				{
+					$this->return_data .= '<li><a href="' . $path . $row['url_title'] . '">' . $row['title'] . '</a></li>';
+				}
+			}
+			
 			// Build the unordered list and return it
 			if ($this->return_data !== '')
 			{
