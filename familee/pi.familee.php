@@ -27,7 +27,7 @@
 
 $plugin_info = array(
 	'pi_name'			=> 'Familee',
-	'pi_version'		=> '2.0',
+	'pi_version'		=> '2.0.0',
 	'pi_author'			=> 'Aaron Fowler',
 	'pi_author_url'		=> 'http://twitter.com/adfowler',
 	'pi_description'	=> 'Outputs an unordered list of forward/reverse relationship links with no duplicates.',
@@ -183,7 +183,7 @@ class Familee {
 
 		EXAMPLE OF USAGE:
 
-		{exp:familee entry_id="123" channel_id="1|2|3" orderby="title" sort="asc" path="/{segment_2}/" class="nav-list" id="article-nav" html_start="<h4>Related Links</h4>" html_end="<p>That's all, folks!</p>"}
+		{exp:familee entry_id="{entry_id}" channel_id="1|2|3" orderby="title" sort="asc" path="/{segment_2}/" class="nav" id="article-nav" html_start="<h4>Related Links</h4>" html_end="<p>That's all, folks!</p>"}
 
 
 		<?php
