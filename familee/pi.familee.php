@@ -27,7 +27,7 @@
 
 $plugin_info = array(
 	'pi_name'			=> 'Familee',
-	'pi_version'		=> '2.0.0',
+	'pi_version'		=> '2.0.1',
 	'pi_author'			=> 'Aaron Fowler',
 	'pi_author_url'		=> 'http://twitter.com/adfowler',
 	'pi_description'	=> 'Outputs an unordered list of forward/reverse relationship links with no duplicates.',
@@ -40,7 +40,7 @@ $plugin_info = array(
  * Outputs an unordered list of 
  * forward/reverse relationship links with no duplicates
  *
- * @version 2.0.0
+ * @version 2.0.1
  *
  */
 class Familee {
@@ -52,10 +52,9 @@ class Familee {
 	 * @access public
 	 * @return void
 	 */
-	function __construct()
+	function Familee()
 	{
 		$this->EE =& get_instance();
-		//global $TMPL, $DB;
 		
 		// Allowed orderby/sort parameters
 		$allowable_orderby = array('entry_id', 'title', 'entry_date');
