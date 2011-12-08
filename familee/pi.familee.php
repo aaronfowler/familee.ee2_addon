@@ -26,8 +26,8 @@
 */
 
 $plugin_info = array(
-	'pi_name'			=> 'Familee',
-	'pi_version'		=> '2.0.2',
+	'pi_name'			=> 'Familee - Playa 4 version',
+	'pi_version'		=> '2.0.3',
 	'pi_author'			=> 'Aaron Fowler',
 	'pi_author_url'		=> 'http://twitter.com/adfowler',
 	'pi_description'	=> 'Outputs an unordered list of forward/reverse relationship links with no duplicates.',
@@ -128,24 +128,15 @@ class Familee {
 			// Find all of the entry_ids related to the current entry
 			$relations = '';
 			
-			$sql = "SELECT rel_child_id 
-			FROM exp_relationships 
-			WHERE rel_parent_id=" . $entry_id . " AND rel_type='channel'";
+			$sql = "SELECT child_entry_id, parent_entry_id
+			FROM exp_playa_relationships 
+			WHERE parent_entry_id=" . $entry_id . " OR child_entry_id=" . $entry_id;
 			// Perform SQL query
 			$results = $this->EE->db->query($sql);
 			foreach ($results->result_array() as $row)
 			{
-				$relations .= $row['rel_child_id'] . ',';
-			}
-			
-			$sql = "SELECT rel_parent_id 
-			FROM exp_relationships 
-			WHERE rel_child_id=" . $entry_id . " AND rel_type='channel'";
-			// Perform SQL query
-			$results = $this->EE->db->query($sql);
-			foreach ($results->result_array() as $row)
-			{
-				$relations .= $row['rel_parent_id'] . ',';
+				$relations .= $row['child_entry_id'] . ',';
+				$relations .= $row['parent_entry_id'] . ',';
 			}
 			
 			if ($relations != '')
@@ -162,7 +153,13 @@ class Familee {
 			
 				foreach ($results->result_array() as $row)
 				{
-					$this->return_data .= '<li><a href="' . $path . $row['url_title'] . '">' . $row['title'] . '</a></li>';
+					if ($entry_id != $row['entry_id'])
+					{
+						$this->return_data .= '<li><a href="' . $path;
+						$this->return_data .= (strtolower($this->EE->TMPL->fetch_param('include_entry_id')) == 'yes') ? $row['entry_id'] . '/' : '';
+						$this->return_data .= $row['url_title'] . '">' . $row['title'] . '</a></li>';
+						
+					}
 				}
 			}
 			

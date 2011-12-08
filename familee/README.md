@@ -1,8 +1,8 @@
-#Familee for ExpressionEngine 2
+#Familee for ExpressionEngine 2 - Playa 4 version
 
 Familee outputs an unordered list of forward/reverse relationship links with no duplicates.
 
-Version: 2.0.0
+Version: 2.0.3
 
 Author: Aaron Fowler (http://twitter.com/adfowler)
 
@@ -38,6 +38,8 @@ Place the "familee" folder inside the ExpressionEngine third-party directory
 6) html_start - Add HTML before the opening `<ul>` tag.
 
 7) html_end - Add HTML after the closing `</ul>` tag.
+
+8) include_entry_id="yes" - output the entry_id of the related links in the url. E.g., http://example.com/1234/my_entry_title_
 
 
 ##Example
